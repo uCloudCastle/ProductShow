@@ -1,0 +1,1 @@
+include ':app', 'materialdialogs', 'takephoto_library', 'photoview', 'xrecyclerview'
