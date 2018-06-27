@@ -44,7 +44,7 @@
             android:paddingBottom="3dp"
             android:text="删除"
             android:visibility="gone"
-            android:background="@drawable/bg_red_bround"/>
+            android:background="@drawable/bg_red_frame"/>
     </RelativeLayout>
 
     <com.randal.aviana.ui.ExpandableLayout

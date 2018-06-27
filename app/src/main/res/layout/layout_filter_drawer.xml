@@ -12,12 +12,34 @@
         android:background="@color/common_white"
         android:scrollbars="none">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/layout_filter_drawer_picker_layout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_filter_drawer_picker_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/layout_filter_drawer_add_picker"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/bg_dot_frame"
+                android:textColor="@color/common_wechat_text"
+                android:textSize="17sp"
+                android:visibility="gone"
+                android:text="新增筛选项"/>
+
         </LinearLayout>
+
 
     </android.support.v4.widget.NestedScrollView>
 

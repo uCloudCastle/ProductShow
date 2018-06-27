@@ -172,7 +172,8 @@ public class MainActivity extends TakePhotoActivity {
                 lm.setJustifyContent(JustifyContent.FLEX_START);
                 tagRecyc.setLayoutManager(lm);
                 ArrayList<String> filters = ConfigManager.getInstance(this).getAllSubTitle();
-                mLabelAdapter = new LabelAdapter(this, filters);
+                mLabelAdapter = new LabelAdapter(this);
+                mLabelAdapter.addTextDataSet(filters);
                 tagRecyc.setAdapter(mLabelAdapter);
 
                 refreshImgList();
@@ -333,7 +334,6 @@ public class MainActivity extends TakePhotoActivity {
             public void onDrawerStateChanged(int newState) {
             }
         });
-        mFilterDrawerLayout.refreshViews();
     }
 
     @Override
@@ -386,7 +386,7 @@ public class MainActivity extends TakePhotoActivity {
                 return true;
             }
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
 
     private void refreshUI() {

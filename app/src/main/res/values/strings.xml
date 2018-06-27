@@ -4,7 +4,8 @@
     <item name="tag_key_data" type="id" />
     <item name="tag_key_position" type="id" />
     <string name="intro"><![CDATA[
-            Copyright 2018-2020 武汉市匠心领创信息科技有限公司\n
-            <center>All rights Reserved</center>
+            Copyright 2018-2020\n
+             武汉市匠心领创信息科技有限公司\n
+            All rights Reserved
             ]]></string>
 </resources>

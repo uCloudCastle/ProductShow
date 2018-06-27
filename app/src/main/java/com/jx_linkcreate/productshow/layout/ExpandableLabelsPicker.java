@@ -16,6 +16,7 @@ import com.jx_linkcreate.productshow.manager.ConfigManager;
 import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.jx_linkcreate.productshow.uibean.LabelBean;
 import com.jx_linkcreate.productshow.widgets.ClickableTextView;
+import com.randal.aviana.LogUtils;
 import com.randal.aviana.ui.ExpandableLayout;
 import com.randal.aviana.widgets.Arrow;
 
@@ -26,15 +27,18 @@ import java.util.ArrayList;
 import static com.jx_linkcreate.productshow.manager.ConfigManager.ADD_ITEM;
 
 
-public class ExpandableLabelsPicker extends LinearLayout implements View.OnClickListener {
+public class ExpandableLabelsPicker extends LinearLayout {
 
     private Context mContext;
-    private ClickableTextView mTitle;
     private TextView mDeleteBtn;
     private Arrow mArrow;
     private ExpandableLayout mExpandable;
     private RecyclerView mRecyclerView;
     private LabelAdapter mAdapter;
+
+    private FilterDrawerLayout mParentLayout;
+    private ClickableTextView mTitleView;
+    private String mTitle;
 
     private ArrayList<LabelBean> mLabelList = new ArrayList<>();
     private ArrayList<Integer> mSelectedPos = new ArrayList<>();
@@ -55,7 +59,7 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
 
     private void inflateView() {
         View.inflate(getContext(), R.layout.layout_expandable_labels_picker, this);
-        mTitle = findViewById(R.id.layout_expandable_labels_picker_title);
+        mTitleView = findViewById(R.id.layout_expandable_labels_picker_title);
         mDeleteBtn = findViewById(R.id.layout_expandable_labels_picker_delete);
         mArrow = findViewById(R.id.layout_expandable_labels_picker_arrow);
         mExpandable = findViewById(R.id.layout_expandable_labels_picker_expand);
@@ -64,7 +68,8 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
         mDeleteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConfigManager.getInstance(mContext).removeTitle(mTitle.getText().toString());
+                ConfigManager.getInstance(mContext).removeTitle(mTitle);
+                mParentLayout.removePick(mTitle);
             }
         });
 
@@ -76,7 +81,7 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
         mAdapter = new LabelAdapter(mContext, mLabelList);
         mRecyclerView.setAdapter(mAdapter);
 
-        mTitle.setOnClickListener(new OnClickListener() {
+        mTitleView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mExpandable.isExpanded()) {
@@ -90,13 +95,21 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
         });
     }
 
+    public void setDrawerLayout(FilterDrawerLayout layout) {
+        mParentLayout = layout;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
     public void switchEditModel(boolean editModel) {
         if (editModel) {
             mDeleteBtn.setVisibility(VISIBLE);
-            mAdapter.appendData(ADD_ITEM);
+            mAdapter.switch2EditModel();
         } else {
             mDeleteBtn.setVisibility(GONE);
-            mAdapter.removeData(ADD_ITEM);
+            mAdapter.switch2NormalModel();
         }
     }
 
@@ -106,21 +119,31 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
     }
 
     public void setTitle(String str) {
-        mTitle.setText(str);
+        mTitle = str;
+        mTitleView.setText(str);
+        mAdapter.setTitle(str);
     }
 
-    public void addLabels(ArrayList<String> labels) {
+    public void addTextLabels(ArrayList<String> labels) {
+        ArrayList<LabelBean> array = new ArrayList<>();
+        for (String str : labels) {
+            array.add(new LabelBean(str, mTitle));
+        }
+        addLabels(array);
+    }
+
+    public void addLabels(ArrayList<LabelBean> labels) {
         if (labels != null) {
             mLabelList.addAll(labels);
             mAdapter.notifyDataSetChanged();
         }
     }
 
-    public ArrayList<String> getLabels() {
+    public ArrayList<LabelBean> getLabels() {
         return mLabelList;
     }
 
-    public String getLabel(int pos) {
+    public LabelBean getLabel(int pos) {
         if (mLabelList.size() <= pos) {
             return null;
         }
@@ -134,35 +157,25 @@ public class ExpandableLabelsPicker extends LinearLayout implements View.OnClick
         }
     }
 
-    public void clearAllSelected() {
-        if (mSelectedPos != null) {
-            mSelectedPos.clear();
-            for (int i = 0; i < mRecyclerView.getChildCount(); ++i) {
-                View child = mRecyclerView.getChildAt(i);
-                child.setSelected(false);
-            }
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view instanceof TextView) {
-            TextView labelView = (TextView) view;
-            Integer pos = (Integer) labelView.getTag(R.id.tag_key_position);
-            String lab = labelView.getText().toString();
-
-            if (mSelectedPos.contains(pos)) {
-                labelView.setSelected(false);
-                mSelectedPos.remove(pos);
-                EventBus.getDefault().post(new FilterEvent(1, lab));
-
-
-            } else {
-                labelView.setSelected(true);
-                mSelectedPos.add(pos);
-                EventBus.getDefault().post(new FilterEvent(0, lab));
-
-            }
-        }
-    }
+//    @Override
+//    public void onClick(View view) {
+//        if (view instanceof TextView) {
+//            TextView labelView = (TextView) view;
+//            Integer pos = (Integer) labelView.getTag(R.id.tag_key_position);
+//            String lab = labelView.getText().toString();
+//
+//            if (mSelectedPos.contains(pos)) {
+//                labelView.setSelected(false);
+//                mSelectedPos.remove(pos);
+//                EventBus.getDefault().post(new FilterEvent(1, lab));
+//
+//
+//            } else {
+//                labelView.setSelected(true);
+//                mSelectedPos.add(pos);
+//                EventBus.getDefault().post(new FilterEvent(0, lab));
+//
+//            }
+//        }
+//    }
 }

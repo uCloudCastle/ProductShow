@@ -2,6 +2,7 @@ package com.jx_linkcreate.productshow.manager;
 
 import android.content.Context;
 
+import com.randal.aviana.LogUtils;
 import com.randal.aviana.database.KeyValueTable;
 import com.randal.aviana.database.SQLiteUtils;
 
@@ -44,13 +45,6 @@ public class ConfigManager {
 
     public void init() {
         syncVariable();
-
-        // todo for debug
-        mTitles.add("地区");
-        ArrayList<String> area = new ArrayList<>();
-        area.add("武汉");
-        area.add("黄石");
-        mSubTitles.put(mTitles.get(0), area);
     }
 
     private void syncVariable() {
@@ -65,6 +59,7 @@ public class ConfigManager {
         if (mTitles.size() > 0) {
             for (String title : mTitles) {
                 String subTitles = table.get(title);
+
                 if (!subTitles.isEmpty()) {
                     ArrayList<String> array = new ArrayList<>(Arrays.asList(subTitles.split(";")));
                     mSubTitles.put(title, array);
@@ -80,6 +75,7 @@ public class ConfigManager {
 
     public void removeTitle(String name) {
         removeValueFromDatabase(DATABASE_TABLE_TITLES, name);
+        removeKey(name);
         syncVariable();
     }
 
@@ -107,11 +103,20 @@ public class ConfigManager {
 
         String val = table.get(key);
         if (val.isEmpty()) {
-            table.put(key, value);
+            val = value;
+            table.put(key, val);
         } else {
             val = val + ";" + value;
             table.put(key, val);
         }
+        LogUtils.d("database add > key:" + key + " value:" + val);
+    }
+
+    private void removeKey(String key) {
+        KeyValueTable table = SQLiteUtils.createOrOpenKeyValueTable(
+                mContext, DATABASE_NAME, DATABASE_TABLE_FILTERS);
+        table.remove(key);
+        LogUtils.d("database > remove key:" + key);
     }
 
     private void removeValueFromDatabase(String key, String value) {
@@ -122,8 +127,11 @@ public class ConfigManager {
         if (!val.isEmpty()) {
             ArrayList<String> array = new ArrayList<>(Arrays.asList(val.split(";")));
             array.remove(value);
-            table.put(key, join(array, ";"));
+
+            val = join(array, ";");
+            table.put(key, val);
         }
+        LogUtils.d("database remove > key:" + key + " value:" + val);
     }
 
     public String join(List<String> list, String sp) {
@@ -132,7 +140,9 @@ public class ConfigManager {
             builder.append(list.get(i));
             builder.append(sp);
         }
-        builder.deleteCharAt(builder.length() - 1);
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
         return builder.toString();
     }
 }
