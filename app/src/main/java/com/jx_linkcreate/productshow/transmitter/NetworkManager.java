@@ -91,9 +91,9 @@ public class NetworkManager {
 
     /* ********************************************************** 点检员端接口 ************************************************ */
 
-    public void uploadProduct(Product product, final NetworkCallback<HResult> callback) {
+    public void uploadProduct(String appKey, Product product, final NetworkCallback<HResult> callback) {
         Map<String,RequestBody> params = new HashMap<>();
-        params.put("appKey", convertToRequestBody("027001"));
+        params.put("appKey", convertToRequestBody(appKey));
         params.put("name", convertToRequestBody(product.name));
         params.put("price",convertToRequestBody(product.price));
         params.put("tags",convertToRequestBody(product.tags));

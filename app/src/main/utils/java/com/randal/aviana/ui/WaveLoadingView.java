@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.jxlc.wt_spotinspection.R;
+import com.jx_linkcreate.productshow.R;
 
 
 public class WaveLoadingView extends View {

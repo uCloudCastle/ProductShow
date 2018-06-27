@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">ProductShow</string>
+    <string name="app_name">商品展示</string>
+
+    <item name="tag_key_data" type="id" />
+    <item name="tag_key_position" type="id" />
+    <string name="intro"><![CDATA[
+            Copyright 2018-2020 武汉市匠心领创信息科技有限公司\n
+            <center>All rights Reserved</center>
+            ]]></string>
 </resources>

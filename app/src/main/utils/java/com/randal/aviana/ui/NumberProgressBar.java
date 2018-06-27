@@ -11,7 +11,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jxlc.wt_spotinspection.R;
+import com.jx_linkcreate.productshow.R;
 
 import static com.randal.aviana.ui.NumberProgressBar.ProgressTextVisibility.Invisible;
 import static com.randal.aviana.ui.NumberProgressBar.ProgressTextVisibility.Visible;

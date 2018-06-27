@@ -17,7 +17,7 @@ public class LogUtils {
         throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
     }
 
-    private static final String TAG = "log_inspection";
+    private static final String TAG = "log_productshow";
     private static final boolean DEBUG = true;
     private static long MARK_TIME = 0;
 

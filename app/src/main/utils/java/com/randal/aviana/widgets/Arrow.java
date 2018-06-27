@@ -8,7 +8,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jxlc.wt_spotinspection.R;
+import com.jx_linkcreate.productshow.R;
+
 
 public class Arrow extends View {
     private Paint mPaint;

@@ -13,7 +13,7 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.jxlc.wt_spotinspection.R;
+import com.jx_linkcreate.productshow.R;
 import com.randal.aviana.interpolator.FastOutSlowInInterpolator;
 
 import static com.randal.aviana.ui.ExpandableLayout.State.COLLAPSED;

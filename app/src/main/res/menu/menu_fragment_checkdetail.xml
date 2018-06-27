@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_item_filter"
+        android:enabled="true"
+        android:title="筛选"
+        android:visible="true"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_item_upload"
+        android:enabled="true"
+        android:title="上传图片"
+        android:visible="true"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_item_about"
+        android:enabled="true"
+        android:title="关于"
+        android:visible="true"
+        app:showAsAction="never"/>
+</menu>

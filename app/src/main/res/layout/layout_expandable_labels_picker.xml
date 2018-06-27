@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp" >
+
+        <com.jx_linkcreate.productshow.widgets.ClickableTextView
+            android:id="@+id/layout_expandable_labels_picker_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:textColor="@color/common_wechat_text"
+            android:textSize="17sp" />
+
+        <com.randal.aviana.widgets.Arrow
+            android:id="@+id/layout_expandable_labels_picker_arrow"
+            app:aw_color="@color/common_grey"
+            app:aw_direction="up"
+            android:layout_width="16dp"
+            android:layout_height="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/layout_expandable_labels_picker_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/layout_expandable_labels_picker_arrow"
+            android:layout_marginEnd="5dp"
+            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:textColor="#fb435b"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:text="删除"
+            android:visibility="gone"
+            android:background="@drawable/bg_red_bround"/>
+    </RelativeLayout>
+
+    <com.randal.aviana.ui.ExpandableLayout
+        android:id="@+id/layout_expandable_labels_picker_expand"
+        app:el_duration="500"
+        app:el_expanded="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/layout_expandable_labels_picker_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+    </com.randal.aviana.ui.ExpandableLayout>
+
+</LinearLayout>

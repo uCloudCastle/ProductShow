@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.randal.aviana.widgets.SquareLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/layout_gridlayout_add"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_add"/>
+
+    <ImageView
+        android:id="@+id/layout_gridlayout_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/layout_gridlayout_delete"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="4dp"
+        android:background="@drawable/delete"
+        android:visibility="invisible"/>
+
+</com.randal.aviana.widgets.SquareLayout>

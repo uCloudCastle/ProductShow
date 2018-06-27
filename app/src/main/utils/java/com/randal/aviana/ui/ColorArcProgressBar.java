@@ -13,7 +13,7 @@ import android.graphics.SweepGradient;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jxlc.wt_spotinspection.R;
+import com.jx_linkcreate.productshow.R;
 
 import java.util.Locale;
 

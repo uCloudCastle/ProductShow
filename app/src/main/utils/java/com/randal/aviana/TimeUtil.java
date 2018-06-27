@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.jxlc.wt_spotinspection.account.AccountManager.FILTER_TIME_FORMAT_TO_SECOND;
 
 /**
  * Created by yanbinbin on 16/7/27.
@@ -49,7 +48,7 @@ public final class TimeUtil {
         Calendar now = Calendar.getInstance();
 
         Calendar startCal = TimeUtil.string2calendar(day1 + " 00:00:00", format + DEFAULT_TIME_FORMAT_WITHOUT_DAY);
-        Calendar endCal = TimeUtil.string2calendar(day2 + " 23:59:59", FILTER_TIME_FORMAT_TO_SECOND);
+        Calendar endCal = TimeUtil.string2calendar(day2 + " 23:59:59", DEFAULT_TIME_FORMAT);
 
         if (now.before(startCal)) {
             return -1;
