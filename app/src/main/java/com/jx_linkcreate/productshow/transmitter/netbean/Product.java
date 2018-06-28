@@ -3,6 +3,7 @@ package com.jx_linkcreate.productshow.transmitter.netbean;
 import java.util.ArrayList;
 
 public class Product {
+    public String id;
     public String name;
     public String price;
     public String tags;

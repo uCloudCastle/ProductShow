@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppCompatNoTitleTransparencyTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/common_transparency</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--<item_history name="android:windowFullscreen">true</item_history>-->
+    </style>
+
 </resources>

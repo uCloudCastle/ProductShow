@@ -33,9 +33,7 @@ public class ExpandableLabelsPicker extends LinearLayout {
     private FilterDrawerLayout mParentLayout;
     private ClickableTextView mTitleView;
     private String mTitle;
-
     private ArrayList<LabelBean> mLabelList = new ArrayList<>();
-    private ArrayList<Integer> mSelectedPos = new ArrayList<>();
 
     public ExpandableLabelsPicker(Context context) {
         this(context, null);

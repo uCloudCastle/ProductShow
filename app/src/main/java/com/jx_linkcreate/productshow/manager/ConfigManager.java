@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ConfigManager {
 
-    public static final String APP_KEY = "027001";
+    public static final String APP_KEY = "027005";
 
     public static final String ADD_ITEM = "add_item";
 

@@ -15,8 +15,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jx_linkcreate.productshow.R;
 import com.jx_linkcreate.productshow.manager.ConfigManager;
+import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.jx_linkcreate.productshow.uibean.LabelBean;
 import com.randal.aviana.ui.Toaster;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,14 +30,16 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
     private ArrayList<LabelBean> mAdapterDataSet = new ArrayList<>();
     private ArrayList<String> mSelectedLabel = new ArrayList<>();
     private String mTitle;
+    private boolean mIsFilter = true;
 
     public LabelAdapter(Context context, ArrayList<LabelBean> data) {
         mContext = context;
         mAdapterDataSet = data;
     }
 
-    public LabelAdapter(Context context) {
+    public LabelAdapter(Context context, boolean isFilter) {
         mContext = context;
+        mIsFilter = isFilter;
     }
 
     public void addTextDataSet(ArrayList<String> list) {
@@ -149,9 +154,15 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
                     if (mSelectedLabel.contains(labStr)) {
                         labelView.setSelected(false);
                         mSelectedLabel.remove(labStr);
+                        if (mIsFilter) {
+                            EventBus.getDefault().post(new FilterEvent(1, labStr));
+                        }
                     } else {
                         labelView.setSelected(true);
                         mSelectedLabel.add(labStr);
+                        if (mIsFilter) {
+                            EventBus.getDefault().post(new FilterEvent(0, labStr));
+                        }
                     }
                 }
             });

@@ -31,8 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkManager {
 
-    //public static final String REMOTE_ADDR = "http://192.168.0.106:8080/";
-    public static final String REMOTE_ADDR = "http://39.105.105.86:8080/";
+    public static final String REMOTE_ADDR = "http://192.168.0.103:8080/";
+    //public static final String REMOTE_ADDR = "http://39.105.105.86:8080/";
 
     private Retrofit mRetrofit;
 
@@ -156,5 +156,32 @@ public class NetworkManager {
                     }
                 });
 
+    }
+
+    public void deleteProduct(String id, final NetworkCallback<HResult> callback) {
+        ApiService service = mRetrofit.create(ApiService.class);
+
+        service.deleteProduct(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HResult>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onNext(HResult response) {
+                        callback.onNext(response);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        callback.onComplete();
+                    }
+                });
     }
 }

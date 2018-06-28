@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.jx_linkcreate.productshow.transmitter.NetworkManager;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,15 @@ public class ImagePreviewActivity extends AppCompatActivity {
         indicator.setViewPager(mViewPager);
     }
 
+    private String wrapUrlIfNotBeginWithHttp(String url) {
+        String baseUrl = NetworkManager.getInstance(this).getBaseUrl();
+        String wrappedUrl = baseUrl;
+        if (!url.startsWith("http")) {
+            wrappedUrl = baseUrl + url;
+        }
+        return wrappedUrl;
+    }
+
     private class ImagePagerAdapter extends PagerAdapter {
         @Override
         public int getCount() {
@@ -56,7 +66,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             Context context = container.getContext();
             PhotoView photoView = new PhotoView(context);
             Glide.with(context)
-                    .load(mUrl.get(position))
+                    .load(wrapUrlIfNotBeginWithHttp(mUrl.get(position)))
                     .into(photoView);
 
             container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

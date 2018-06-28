@@ -31,7 +31,6 @@ import com.google.android.flexbox.JustifyContent;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.jx_linkcreate.productshow.adapter.LabelAdapter;
-import com.jx_linkcreate.productshow.layout.FilterDrawerLayout;
 import com.jx_linkcreate.productshow.manager.ConfigManager;
 import com.jx_linkcreate.productshow.transmitter.NetworkCallback;
 import com.jx_linkcreate.productshow.transmitter.NetworkManager;
@@ -40,6 +39,7 @@ import com.jx_linkcreate.productshow.transmitter.netbean.HttpResponse;
 import com.jx_linkcreate.productshow.transmitter.netbean.Product;
 import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.randal.aviana.BitmapUtils;
+import com.randal.aviana.ui.Toaster;
 
 import org.devio.takephoto.app.TakePhoto;
 import org.devio.takephoto.app.TakePhotoActivity;
@@ -64,7 +64,7 @@ public class MainActivity extends TakePhotoActivity {
 
     private MaterialDialog mUploadDialog;
     private DrawerLayout mDrawerLayout;
-    private FilterDrawerLayout mFilterDrawerLayout;
+
     private MenuItem mMenuItem;
 
     private XRecyclerView mRecyclerView;
@@ -89,7 +89,6 @@ public class MainActivity extends TakePhotoActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_main_recyclerview_drawer_layout);
         mRecyclerView = (XRecyclerView) findViewById(R.id.activity_main_recyclerview);
-        mFilterDrawerLayout = (FilterDrawerLayout) findViewById(R.id.activity_main_recyclerview_drawer);
         initRecyclerView();
         initDrawer();
 
@@ -144,19 +143,31 @@ public class MainActivity extends TakePhotoActivity {
                         .positiveText("确认")
                         .negativeText("取消")
                         .canceledOnTouchOutside(false)
+                        .autoDismiss(false)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {
                                 View cv = dialog.getCustomView();
                                 EditText et_name = cv.findViewById(R.id.layout_dialog_name_value);
                                 EditText et_price = cv.findViewById(R.id.layout_dialog_price_value);
+                                String name = et_name.getText().toString();
+                                String price = et_price.getText().toString();
 
+                                if (name.isEmpty() || price.isEmpty()) {
+                                    Toaster.showLongToast(MainActivity.this, "输入内容不能为空！");
+                                    return;
+                                }
                                 ArrayList<String> sendFilePaths = new ArrayList<>(mImgPaths);
                                 sendFilePaths.remove(ADD_ITEM);
-                                uploadProduct(et_name.getText().toString(),
-                                        et_price.getText().toString(),
+                                if (sendFilePaths.size() == 0) {
+                                    Toaster.showLongToast(MainActivity.this, "请至少上传一张图片");
+                                    return;
+                                }
+
+                                uploadProduct(name, price,
                                         ConfigManager.getInstance(MainActivity.this).join(mLabelAdapter.getSelectedLabel(), ";"),
                                         sendFilePaths);
+                                dialog.dismiss();
                             }
                         }).build();
 
@@ -172,7 +183,7 @@ public class MainActivity extends TakePhotoActivity {
                 lm.setJustifyContent(JustifyContent.FLEX_START);
                 tagRecyc.setLayoutManager(lm);
                 ArrayList<String> filters = ConfigManager.getInstance(this).getAllSubTitle();
-                mLabelAdapter = new LabelAdapter(this);
+                mLabelAdapter = new LabelAdapter(this, false);
                 mLabelAdapter.addTextDataSet(filters);
                 tagRecyc.setAdapter(mLabelAdapter);
 
@@ -287,17 +298,24 @@ public class MainActivity extends TakePhotoActivity {
         mRecyclerView.getDefaultRefreshHeaderView()
                 .setRefreshTimeVisible(true);
         mRecyclerView.setArrowImageView(R.drawable.arrow_dot_down);
-        mRecyclerView.setPullRefreshEnabled(false);
+        mRecyclerView.setPullRefreshEnabled(true);
 
         mRecyclerView.getDefaultFootView().setLoadingHint("加载中...");
         mRecyclerView.getDefaultFootView().setNoMoreHint("\n— 数据加载完毕 —");
         mRecyclerView.setLimitNumberToCallLoadMore(0);
-        mRecyclerView.setNoMore(true);
+        //mRecyclerView.setNoMore(true);
 
         mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 loadData();
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        if (mRecyclerView != null) {
+                            mRecyclerView.refreshComplete();
+                        }
+                    }
+                }, 1500);
             }
 
             @Override
@@ -395,6 +413,9 @@ public class MainActivity extends TakePhotoActivity {
             }
         }
         mAdapter.notifyDataSetChanged();
+        if (mRecyclerView != null) {
+            mRecyclerView.refreshComplete();
+        }
     }
 
 
@@ -404,6 +425,31 @@ public class MainActivity extends TakePhotoActivity {
 
     public void openMenu() {
         mDrawerLayout.openDrawer(GravityCompat.END);
+    }
+
+
+    private void deleteProductById(String id) {
+        NetworkManager.getInstance(this).deleteProduct(id, new NetworkCallback<HResult>() {
+            @Override
+            public void onNext(HResult hResult) {
+                if (hResult.code != 0) {
+                    Toaster.showShortToast(MainActivity.this, "删除失败，错误码 " + hResult.code + "：" + hResult.msg);
+                } else {
+                    Toaster.showShortToast(MainActivity.this, "删除成功");
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                Toaster.showShortToast(MainActivity.this, "删除失败，请检查网络");
+            }
+
+            @Override
+            public void onComplete() {
+                loadData();
+            }
+        });
     }
 
 
@@ -456,7 +502,25 @@ public class MainActivity extends TakePhotoActivity {
 
         void bindDataSet(final Product product) {
             mProductName.setText(product.name);
-            mProductPrice.setText(product.price);
+            mProductPrice.setText("价格：" + product.price + "元");
+
+            mLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    new MaterialDialog.Builder(MainActivity.this)
+                            .title("提示")
+                            .content("删除该商品？")
+                            .negativeText("取消")
+                            .positiveText("确认")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    deleteProductById(product.id);
+                                }
+                            }).show();
+                    return false;
+                }
+            });
 
             final ArrayList<String> urls = product.urls;
             if (urls.size() > 0) {
@@ -466,13 +530,12 @@ public class MainActivity extends TakePhotoActivity {
                         .placeholder(R.drawable.loading)
                         .error(R.drawable.img_empty);
                 Glide.with(MainActivity.this)
-                        .load(urls.get(0))
+                        .load(wrapUrlIfNotBeginWithHttp(urls.get(0)))
                         .apply(options)
                         .into(mImageView);
             } else {
                 mImageView.setImageDrawable(getDrawable(R.drawable.img_empty));
             }
-
 
             mReviewImgLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -489,6 +552,14 @@ public class MainActivity extends TakePhotoActivity {
         }
     }
 
+    private String wrapUrlIfNotBeginWithHttp(String url) {
+        String baseUrl = NetworkManager.getInstance(this).getBaseUrl();
+        String wrappedUrl = baseUrl;
+        if (!url.startsWith("http")) {
+            wrappedUrl = baseUrl + url;
+        }
+        return wrappedUrl;
+    }
 
     /*
      *  ************************************************************************* GridImageAdapter
