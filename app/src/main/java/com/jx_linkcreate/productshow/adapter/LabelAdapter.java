@@ -31,6 +31,7 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
     private ArrayList<String> mSelectedLabel = new ArrayList<>();
     private String mTitle;
     private boolean mIsFilter = true;
+    private boolean mClickable = true;
 
     public LabelAdapter(Context context, ArrayList<LabelBean> data) {
         mContext = context;
@@ -40,6 +41,12 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
     public LabelAdapter(Context context, boolean isFilter) {
         mContext = context;
         mIsFilter = isFilter;
+    }
+
+    public LabelAdapter(Context context, boolean isFilter, boolean clickable) {
+        mContext = context;
+        mIsFilter = isFilter;
+        mClickable = clickable;
     }
 
     public void addTextDataSet(ArrayList<String> list) {
@@ -145,6 +152,13 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
             mLabel.setText(bean.label);
             mLabel.setTag(R.id.tag_key_data, bean.label);
             mLabel.setTag(R.id.tag_key_position, pos);
+
+            if (!mClickable) {
+                mLabel.setFocusable(false);
+                mLabel.setClickable(false);
+                return;
+            }
+
             mLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -179,6 +193,12 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
             mLabel.setTag(R.id.tag_key_position, pos);
             if (mSelectedLabel.contains(mLabel.getText().toString())) {
                 mSelectedLabel.remove(mLabel.getText().toString());
+            }
+
+            if (!mClickable) {
+                mLabel.setFocusable(false);
+                mLabel.setClickable(false);
+                return;
             }
 
             mLabel.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +237,12 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.LabelHolder>
             mLabel.setVisibility(View.GONE);
             mAdd.setVisibility(View.VISIBLE);
             mDelete.setVisibility(View.GONE);
+
+            if (!mClickable) {
+                mLabel.setFocusable(false);
+                mLabel.setClickable(false);
+                return;
+            }
 
             mAdd.setOnClickListener(new View.OnClickListener() {
                 @Override

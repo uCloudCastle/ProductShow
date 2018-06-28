@@ -16,9 +16,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jx_linkcreate.productshow.R;
 import com.jx_linkcreate.productshow.manager.ConfigManager;
+import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.randal.aviana.DensityUtils;
-import com.randal.aviana.LogUtils;
 import com.randal.aviana.ui.Toaster;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,10 @@ public class FilterDrawerLayout extends FrameLayout {
                 }
                 mEditBtn.setText(mIsEditModel ? "完成" : "编辑");
                 mNewBtn.setVisibility(mIsEditModel ? VISIBLE : GONE);
+
+                if (mIsEditModel) {
+                    EventBus.getDefault().post(new FilterEvent(2, ""));
+                }
             }
         });
 

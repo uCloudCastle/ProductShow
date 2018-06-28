@@ -57,6 +57,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_PATHS;
+import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_TAGS;
+import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_TITLE;
 import static com.jx_linkcreate.productshow.manager.ConfigManager.ADD_ITEM;
 import static com.jx_linkcreate.productshow.manager.ConfigManager.APP_KEY;
 
@@ -376,6 +378,8 @@ public class MainActivity extends TakePhotoActivity {
             }
         } else if (event.filterType == 1) {                       // remove filter
             mFilter.remove(event.value);
+        } else if (event.filterType == 2) {                    // remove all
+            mFilter.clear();
         }
         makeFilterList();
     }
@@ -545,6 +549,8 @@ public class MainActivity extends TakePhotoActivity {
                     }
 
                     Intent intent = new Intent(MainActivity.this, ImagePreviewActivity.class);
+                    intent.putExtra(INTENT_KEY_PREVIEW_TITLE, product.name);
+                    intent.putExtra(INTENT_KEY_PREVIEW_TAGS, product.tags);
                     intent.putStringArrayListExtra(INTENT_KEY_PREVIEW_PATHS, urls);
                     startActivity(intent);
                 }

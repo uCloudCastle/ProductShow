@@ -4,14 +4,31 @@
     android:layout_height="match_parent"
     android:background="@color/common_ninety_percent_mask">
 
+    <TextView
+        android:id="@+id/activity_image_preview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_preview_tags_recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_image_preview_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp" />
+
     <com.jx_linkcreate.productshow.widgets.HackyViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_image_preview_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp"/>
+        android:layout_below="@+id/activity_preview_tags_recyclerview"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="30dp"/>
 
     <me.relex.circleindicator.CircleIndicator
         android:id="@+id/activity_image_preview_indicator"
@@ -19,6 +36,6 @@
         android:layout_height="24dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="8dp"/>
 
 </RelativeLayout>
