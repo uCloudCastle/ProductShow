@@ -351,25 +351,13 @@ public class MainActivity extends TakePhotoActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFilterChanged(FilterEvent event) {
         if (event.filterType == 0) {                             // add filter
-//            if (mFilter.containsKey(event.filterObject)) {
-//                ArrayList<String> array = mFilter.get(event.filterObject);
-//                array.add(event.value);
-//            } else {
-//                ArrayList<String> array = new ArrayList<>();
-//                array.add(event.value);
-//                mFilter.put(event.filterObject, array);
-//            }
+            if (mFilter.contains(event.value)) {
+                // do nothing
+            } else {
+                mFilter.add(event.value);
+            }
         } else if (event.filterType == 1) {                       // remove filter
-//            if (mFilter.containsKey(event.filterObject)) {
-//                ArrayList<String> array = mFilter.get(event.filterObject);
-//                if (array.size() > 1) {
-//                    array.remove(event.value);
-//                } else {
-//                    mFilter.remove(event.filterObject);
-//                }
-//            } else {
-//                // do nothing
-//            }
+            mFilter.remove(event.value);
         }
         makeFilterList();
     }

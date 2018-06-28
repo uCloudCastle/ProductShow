@@ -13,18 +13,12 @@ import com.google.android.flexbox.JustifyContent;
 import com.jx_linkcreate.productshow.R;
 import com.jx_linkcreate.productshow.adapter.LabelAdapter;
 import com.jx_linkcreate.productshow.manager.ConfigManager;
-import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.jx_linkcreate.productshow.uibean.LabelBean;
 import com.jx_linkcreate.productshow.widgets.ClickableTextView;
-import com.randal.aviana.LogUtils;
 import com.randal.aviana.ui.ExpandableLayout;
 import com.randal.aviana.widgets.Arrow;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
-
-import static com.jx_linkcreate.productshow.manager.ConfigManager.ADD_ITEM;
 
 
 public class ExpandableLabelsPicker extends LinearLayout {
@@ -156,26 +150,4 @@ public class ExpandableLabelsPicker extends LinearLayout {
             mAdapter.notifyDataSetChanged();
         }
     }
-
-//    @Override
-//    public void onClick(View view) {
-//        if (view instanceof TextView) {
-//            TextView labelView = (TextView) view;
-//            Integer pos = (Integer) labelView.getTag(R.id.tag_key_position);
-//            String lab = labelView.getText().toString();
-//
-//            if (mSelectedPos.contains(pos)) {
-//                labelView.setSelected(false);
-//                mSelectedPos.remove(pos);
-//                EventBus.getDefault().post(new FilterEvent(1, lab));
-//
-//
-//            } else {
-//                labelView.setSelected(true);
-//                mSelectedPos.add(pos);
-//                EventBus.getDefault().post(new FilterEvent(0, lab));
-//
-//            }
-//        }
-//    }
 }
