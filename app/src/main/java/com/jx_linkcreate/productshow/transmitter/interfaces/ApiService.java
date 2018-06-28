@@ -24,8 +24,7 @@ public interface ApiService {
     Observable<HResult> uploadProduct(@PartMap Map<String, RequestBody> map,
                                       @Part List<MultipartBody.Part> partList);
 
-    @Multipart
-    @POST("/deleteProduct")
+    @GET("/deleteProduct")
     Observable<HResult> deleteProduct(@Query("productId") String productId);
 
     @GET("/getAllProduct")

@@ -16,6 +16,13 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/menu_item_appkey"
+        android:enabled="true"
+        android:title="修改AppKey"
+        android:visible="true"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/menu_item_about"
         android:enabled="true"
         android:title="关于"

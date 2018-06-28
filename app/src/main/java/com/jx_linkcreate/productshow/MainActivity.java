@@ -19,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.aigestudio.wheelpicker.WheelPicker;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexDirection;
@@ -39,6 +41,7 @@ import com.jx_linkcreate.productshow.transmitter.netbean.HttpResponse;
 import com.jx_linkcreate.productshow.transmitter.netbean.Product;
 import com.jx_linkcreate.productshow.uibean.FilterEvent;
 import com.randal.aviana.BitmapUtils;
+import com.randal.aviana.DensityUtils;
 import com.randal.aviana.ui.Toaster;
 
 import org.devio.takephoto.app.TakePhoto;
@@ -56,13 +59,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.aigestudio.wheelpicker.WheelPicker.ALIGN_CENTER;
 import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_PATHS;
 import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_TAGS;
 import static com.jx_linkcreate.productshow.ImagePreviewActivity.INTENT_KEY_PREVIEW_TITLE;
 import static com.jx_linkcreate.productshow.manager.ConfigManager.ADD_ITEM;
-import static com.jx_linkcreate.productshow.manager.ConfigManager.APP_KEY;
 
-public class MainActivity extends TakePhotoActivity {
+public class MainActivity extends TakePhotoActivity implements WheelPicker.OnItemSelectedListener {
 
     private MaterialDialog mUploadDialog;
     private DrawerLayout mDrawerLayout;
@@ -81,6 +84,10 @@ public class MainActivity extends TakePhotoActivity {
     private ArrayList<String> mImgPaths = new ArrayList<>();
     private GridImageAdapter mDialogImgAdapter;
     private LabelAdapter mLabelAdapter;
+
+    private final static int PAGE_TAG = 5000;
+    private final static List<String> NUMBERS = new ArrayList<>(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"));
+    private List<String> mSelected = new ArrayList<>(Arrays.asList("", "", "", "", "", ""));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,10 +200,19 @@ public class MainActivity extends TakePhotoActivity {
                 mUploadDialog.show();
                 break;
             }
+            case R.id.menu_item_appkey: {
+                showAppKeyDialog();
+                break;
+            }
             case R.id.menu_item_about: {
+                String appkey = ConfigManager.getInstance(this).getAppKey();
+
                 MaterialDialog dialog = new MaterialDialog.Builder(this)
                         .title("商品展示系统Android客户端")
-                        .content(R.string.intro, true)
+                        .content("AppKey：" + appkey + "\n\n" +
+                                "Copyright 2018-2020\n" +
+                                "武汉市匠心领创信息科技有限公司\n" +
+                                "All rights Reserved")
                         .build();
                 dialog.getContentView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 dialog.show();
@@ -204,6 +220,84 @@ public class MainActivity extends TakePhotoActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAppKeyDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("请选择配置数值")
+                .customView(R.layout.dialog_wheelpick, false)
+                .positiveText("修改")
+                .negativeText("取消")
+                .autoDismiss(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        onDialogPositiveClicked(dialog);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .build();
+
+
+        LinearLayout pLayout = (LinearLayout) dialog.getCustomView().findViewById(R.id.dialog_wheelpick_layout);
+        pLayout.setWeightSum(6);
+        pLayout.setPadding(DensityUtils.dp2px(this, 5), 0,
+                DensityUtils.dp2px(this, 5), 0);
+
+        String appkey = ConfigManager.getInstance(this).getAppKey();
+        mSelected = new ArrayList<>(Arrays.asList("", "", "", "", "", ""));
+        for (int i = 0; i < 6; ++i) {                                                      // Wheel is RTL Layout
+            WheelPicker picker = new WheelPicker(this);
+            picker.setAtmospheric(true);
+            picker.setCurved(true);
+            picker.setCyclic(false);
+            picker.setItemAlign(ALIGN_CENTER);
+            picker.setItemTextSize(DensityUtils.sp2px(this, 32));
+            picker.setItemTextColor(this.getResources().getColor(R.color.common_one_third_light_grey));
+            picker.setSelectedItemTextColor(this.getResources().getColor(R.color.wheel_selected_color));
+            picker.setOnItemSelectedListener(this);
+            picker.setTag(PAGE_TAG + i);
+            picker.setData(NUMBERS);
+
+            int len = appkey.length();
+            if (len > i) {
+                String cr = appkey.substring(len - i - 1, len - i);
+                picker.setSelectedItemPosition(NUMBERS.indexOf(cr));
+                mSelected.set(mSelected.size() - 1 - i, cr);
+            }
+
+            LinearLayout.LayoutParams wheelParams = new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT);
+            wheelParams.weight = 1;
+            wheelParams.setMargins(DensityUtils.dp2px(this, 5), 0,
+                    DensityUtils.dp2px(this, 5), 0);
+            pLayout.addView(picker, wheelParams);
+        }
+        dialog.show();
+    }
+
+    private void onDialogPositiveClicked(final MaterialDialog dialog) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : mSelected) {
+            sb.append(s);
+        }
+        String strValue = sb.toString();
+        ConfigManager.getInstance(this).updateAppKey(strValue);
+
+        Toaster.showShortToast(this, "修改成功");
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onItemSelected(WheelPicker picker, Object data, int position) {
+        int num = (int)picker.getTag() - PAGE_TAG;
+        int pos = mSelected.size() - 1 - num;
+        mSelected.set(pos, (String) data);
     }
 
     private void uploadProduct(String name, String price, String tags, ArrayList<String> filePaths) {
@@ -221,7 +315,8 @@ public class MainActivity extends TakePhotoActivity {
                 .build();
         dialog.show();
 
-        NetworkManager.getInstance(this).uploadProduct(APP_KEY, product, new NetworkCallback<HResult>() {
+        String appkey = ConfigManager.getInstance(this).getAppKey();
+        NetworkManager.getInstance(this).uploadProduct(appkey, product, new NetworkCallback<HResult>() {
             @Override
             public void onNext(HResult hResult) {
                 if (hResult.code != 0) {
@@ -244,7 +339,8 @@ public class MainActivity extends TakePhotoActivity {
             }
 
             @Override
-            public void onComplete() { }
+            public void onComplete() {
+            }
         });
     }
 
@@ -257,7 +353,8 @@ public class MainActivity extends TakePhotoActivity {
                 .build();
         dialog.show();
 
-        NetworkManager.getInstance(this).getAllProduct(APP_KEY, new NetworkCallback<HttpResponse<List<Product>>>() {
+        String appkey = ConfigManager.getInstance(this).getAppKey();
+        NetworkManager.getInstance(this).getAllProduct(appkey, new NetworkCallback<HttpResponse<List<Product>>>() {
             @Override
             public void onNext(HttpResponse<List<Product>> response) {
                 if (response.code != 0) {

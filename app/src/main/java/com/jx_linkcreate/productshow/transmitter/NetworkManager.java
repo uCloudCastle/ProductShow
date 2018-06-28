@@ -31,8 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkManager {
 
-    public static final String REMOTE_ADDR = "http://192.168.0.103:8080/";
-    //public static final String REMOTE_ADDR = "http://39.105.105.86:8080/";
+    //public static final String REMOTE_ADDR = "http://192.168.0.103:8080/";
+    public static final String REMOTE_ADDR = "http://39.105.105.86:8080/";
 
     private Retrofit mRetrofit;
 

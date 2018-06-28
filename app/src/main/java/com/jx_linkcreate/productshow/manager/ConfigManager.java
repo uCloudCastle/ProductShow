@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class ConfigManager {
 
-    public static final String APP_KEY = "027005";
+    public static final String APP_KEY = "app_key";
+    public static final String APP_KEY_DEFAULT = "027005";
 
     public static final String ADD_ITEM = "add_item";
 
@@ -45,6 +46,27 @@ public class ConfigManager {
 
     public void init() {
         syncVariable();
+    }
+
+    public String getAppKey() {
+        KeyValueTable table = SQLiteUtils.createOrOpenKeyValueTable(
+                mContext, DATABASE_NAME, DATABASE_TABLE_FILTERS);
+        String value = table.get(APP_KEY);
+
+        if (value.isEmpty()) {
+            return APP_KEY_DEFAULT;
+        }
+        return value;
+    }
+
+    public void updateAppKey(String keyValue) {
+        if (keyValue == null || keyValue.isEmpty()) {
+            return;
+        }
+
+        KeyValueTable table = SQLiteUtils.createOrOpenKeyValueTable(
+                mContext, DATABASE_NAME, DATABASE_TABLE_FILTERS);
+        table.put(APP_KEY, keyValue);
     }
 
     private void syncVariable() {
