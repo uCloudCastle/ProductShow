@@ -153,6 +153,12 @@ public class MainActivity extends TakePhotoActivity implements WheelPicker.OnIte
                         .negativeText("取消")
                         .canceledOnTouchOutside(false)
                         .autoDismiss(false)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        })
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {
@@ -340,6 +346,30 @@ public class MainActivity extends TakePhotoActivity implements WheelPicker.OnIte
 
             @Override
             public void onComplete() {
+                loadDataWithoutDialog();
+            }
+        });
+    }
+
+    private void loadDataWithoutDialog() {
+        String appkey = ConfigManager.getInstance(this).getAppKey();
+        NetworkManager.getInstance(this).getAllProduct(appkey, new NetworkCallback<HttpResponse<List<Product>>>() {
+            @Override
+            public void onNext(HttpResponse<List<Product>> response) {
+                if (response.code == 0) {
+                    mProductOrigin.clear();
+                    mProductOrigin.addAll(response.result);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+                refreshUI();
             }
         });
     }
@@ -548,7 +578,7 @@ public class MainActivity extends TakePhotoActivity implements WheelPicker.OnIte
 
             @Override
             public void onComplete() {
-                loadData();
+                loadDataWithoutDialog();
             }
         });
     }
