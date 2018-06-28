@@ -8,6 +8,7 @@ public class Product {
     public String price;
     public String tags;
     public ArrayList<String> urls = new ArrayList<>();
+    public ArrayList<String> thumbs = new ArrayList<>();
     public ArrayList<String> localPaths = new ArrayList<>();
 
     @Override
