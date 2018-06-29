@@ -82,21 +82,21 @@ public class NetworkManager {
         return REMOTE_ADDR;
     }
 
-    private RequestBody convertToRequestBody(String param){
+    private RequestBody convertToRequestBody(String param) {
         if (param == null) {
             param = "";
         }
         return RequestBody.create(MediaType.parse("text/plain"), param);
     }
 
-    /* ********************************************************** 点检员端接口 ************************************************ */
+    /* ********************************************************** 服务端接口 ************************************************ */
 
     public void uploadProduct(String appKey, Product product, final NetworkCallback<HResult> callback) {
-        Map<String,RequestBody> params = new HashMap<>();
+        Map<String, RequestBody> params = new HashMap<>();
         params.put("appKey", convertToRequestBody(appKey));
         params.put("name", convertToRequestBody(product.name));
-        params.put("price",convertToRequestBody(product.price));
-        params.put("tags",convertToRequestBody(product.tags));
+        params.put("price", convertToRequestBody(product.price));
+        params.put("tags", convertToRequestBody(product.tags));
 
         ArrayList<MultipartBody.Part> parts = new ArrayList<>();
         if (product.localPaths != null) {
@@ -112,7 +112,8 @@ public class NetworkManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HResult>() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onNext(HResult response) {
@@ -131,6 +132,40 @@ public class NetworkManager {
                 });
     }
 
+    public void updateProduct(String appKey, Product product, final NetworkCallback<HResult> callback) {
+        ApiService service = mRetrofit.create(ApiService.class);
+        service.updateProduct(appKey, product)                                        // 返回 Observable, 进入RxJava 流程
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HResult>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(HResult response) {
+                        if (callback != null) {
+                            callback.onNext(response);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (callback != null) {
+                            callback.onError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (callback != null) {
+                            callback.onComplete();
+                        }
+                    }
+                });
+
+    }
+
     public void getAllProduct(String appKey, final NetworkCallback<HttpResponse<List<Product>>> callback) {
         ApiService service = mRetrofit.create(ApiService.class);
         service.getAllProduct(appKey)                                        // 返回 Observable, 进入RxJava 流程
@@ -138,7 +173,8 @@ public class NetworkManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HttpResponse<List<Product>>>() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onNext(HttpResponse<List<Product>> response) {
@@ -166,7 +202,8 @@ public class NetworkManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HResult>() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onNext(HResult response) {

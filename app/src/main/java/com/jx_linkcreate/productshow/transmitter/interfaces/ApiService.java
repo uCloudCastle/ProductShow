@@ -10,6 +10,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -23,6 +24,10 @@ public interface ApiService {
     @POST("/uploadProduct")
     Observable<HResult> uploadProduct(@PartMap Map<String, RequestBody> map,
                                       @Part List<MultipartBody.Part> partList);
+
+    // Sever not implement this one
+    @POST("/updateProduct")
+    Observable<HResult> updateProduct(@Query("appKey") String appKey, @Body Product product);
 
     @GET("/deleteProduct")
     Observable<HResult> deleteProduct(@Query("productId") String productId);

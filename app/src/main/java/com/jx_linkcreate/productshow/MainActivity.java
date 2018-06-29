@@ -102,6 +102,14 @@ public class MainActivity extends TakePhotoActivity implements WheelPicker.OnIte
         initDrawer();
 
         loadData();
+
+//        String appkey = ConfigManager.getInstance(this).getAppKey();
+//        Product product = new Product();
+//        product.id = "898";
+//        product.name = "床头柜A1029";
+//        product.price = "4000";
+//        product.tags = "地中海;独立式;环保级别";
+//        NetworkManager.getInstance(this).updateProduct(appkey, product, null);
     }
 
     @Override
